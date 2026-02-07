@@ -81,13 +81,38 @@ def estimasi(data: dict):
 
     faktor_detail = FAKTOR_DETAIL[data["tingkat_detail"]]
     faktor_cuaca = FAKTOR_CUACA[cuaca_asli]
+    
+    DEFAULT_MARGIN = 0.20
+    MAX_DISKON = 0.15
 
     estimasi_harga = int(subtotal * faktor_detail * faktor_cuaca)
+    
+    margin = DEFAULT_MARGIN
+    nilai_margin = int(estimasi_harga * margin)
+    
+    harga_jual = estimasi_harga + nilai_margin
+    
+    diskon = data.get("diskon", 0)
+    if diskon > MAX_DISKON:
+        diskon = MAX_DISKON
+    
+    nilai_diskon = int(harga_jual * diskon)
+    harga_final = harga_jual - nilai_diskon
 
     return {
-    "estimasi_harga": estimasi_harga,
+    "biaya_produksi": estimasi_harga,
     "estimasi_durasi_hari": durasi,
     "estimasi_jumlah_pekerja": pekerja,
+
+    "margin_persen": margin * 100,
+    "nilai_margin": nilai_margin,
+    "harga_sebelum_diskon": harga_jual,
+
+    "diskon_persen": diskon * 100,
+    "nilai_diskon": nilai_diskon,
+
+    "harga_final": harga_final,
+
     "breakdown": {
         "material": harga_material,
         "upah": biaya_upah,
@@ -95,6 +120,6 @@ def estimasi(data: dict):
         "subtotal": subtotal,
         "faktor_detail": faktor_detail,
         "faktor_cuaca": faktor_cuaca
-        }
     }
+}
     
