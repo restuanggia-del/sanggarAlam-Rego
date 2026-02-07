@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Sanggar Alam - Estimasi Harga Proyek</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        background: #f4f6f8;
+        padding: 40px;
+      }
+      .card {
+        max-width: 500px;
+        background: #ffffff;
+        padding: 25px;
+        border-radius: 10px;
+        margin: auto;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+      }
+      h2 {
+        text-align: center;
+      }
+      label {
+        display: block;
+        margin-top: 15px;
+      }
+      input,
+      select,
+      button {
+        width: 100%;
+        padding: 10px;
+        margin-top: 5px;
+      }
+      button {
+        background: #2c7be5;
+        color: white;
+        border: none;
+        cursor: pointer;
+        margin-top: 20px;
+      }
+      #hasil {
+        margin-top: 20px;
+        font-size: 18px;
+        text-align: center;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="card">
+      <h2>Estimasi Harga Proyek</h2>
+
+      <label>Jenis Proyek</label>
+      <select id="jenis_proyek">
+        <option value="kolam">Kolam</option>
+        <option value="patung">Patung</option>
+        <option value="gapura">Gapura</option>
+      </select>
+
+      <label>Luas (m²)</label>
+      <input type="number" id="luas_m2" value="30" />
+
+      <label>Tingkat Detail (1–5)</label>
+      <input type="number" id="tingkat_detail" value="4" />
+
+      <label>Jumlah Pekerja</label>
+      <input type="number" id="jumlah_pekerja" value="3" />
+
+      <label>Durasi (hari)</label>
+      <input type="number" id="durasi_hari" value="15" />
+
+      <label>Jarak (km)</label>
+      <input type="number" id="jarak_km" value="20" />
+
+      <button onclick="prediksi()">Hitung Estimasi</button>
+
+      <div id="hasil"></div>
+    </div>
+
+    <script>
+      async function prediksi() {
+        const data = {
+          jenis_proyek: document.getElementById("jenis_proyek").value,
+          luas_m2: Number(document.getElementById("luas_m2").value),
+          tingkat_detail: Number(
+            document.getElementById("tingkat_detail").value,
+          ),
+          jumlah_pekerja: Number(
+            document.getElementById("jumlah_pekerja").value,
+          ),
+          durasi_hari: Number(document.getElementById("durasi_hari").value),
+          jarak_km: Number(document.getElementById("jarak_km").value),
+        };
+
+        const response = await fetch("http://127.0.0.1:8000/predict", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        document.getElementById("hasil").innerText =
+          "Estimasi Harga: Rp " + result.estimasi_harga.toLocaleString("id-ID");
+      }
+    </script>
+  </body>
+</html>

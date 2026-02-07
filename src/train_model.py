@@ -42,4 +42,4 @@ print(f"MAE (rata-rata selisih): Rp {int(mae):,}")
 joblib.dump(model, "model_harga.pkl")
 joblib.dump(encoder, "encoder_jenis_proyek.pkl")
 
-print("✅ Model berhasil disimpan")
+print("Model berhasil disimpan")

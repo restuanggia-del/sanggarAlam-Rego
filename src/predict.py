@@ -19,4 +19,4 @@ df["jenis_proyek"] = encoder.transform(df["jenis_proyek"])
 
 hasil = model.predict(df)
 
-print(f"💰 Estimasi Harga Proyek: Rp {int(hasil[0]):,}")
+print(f"Estimasi Harga Proyek: Rp {int(hasil[0]):,}")
