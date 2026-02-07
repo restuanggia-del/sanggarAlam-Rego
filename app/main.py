@@ -3,6 +3,41 @@ from fastapi.middleware.cors import CORSMiddleware
 import joblib
 import pandas as pd
 
+from sqlalchemy import create_engine, Column, Integer, String, Float
+from sqlalchemy.orm import declarative_base, sessionmaker
+from datetime import datetime
+
+DATABASE_URL = "sqlite:///./app.db"
+
+engine = create_engine(
+    DATABASE_URL, connect_args={"check_same_thread": False}
+)
+
+SessionLocal = sessionmaker(bind=engine)
+
+Base = declarative_base()
+
+class HistoriEstimasi(Base):
+    __tablename__ = "histori_estimasi"
+
+    id = Column(Integer, primary_key=True, index=True)
+    tanggal = Column(String, default=lambda: datetime.now().strftime("%Y-%m-%d %H:%M"))
+
+    jenis_proyek = Column(String)
+    luas_m2 = Column(Float)
+    tingkat_detail = Column(Integer)
+    cuaca = Column(String)
+    jarak_km = Column(Float)
+
+    durasi_hari = Column(Integer)
+    jumlah_pekerja = Column(Integer)
+
+    biaya_produksi = Column(Integer)
+    harga_final = Column(Integer)
+    diskon = Column(Float)
+    
+Base.metadata.create_all(bind=engine)
+
 app = FastAPI(title="Sanggar Alam - Estimasi Proyek")
 
 app.add_middleware(
@@ -98,6 +133,25 @@ def estimasi(data: dict):
     
     nilai_diskon = int(harga_jual * diskon)
     harga_final = harga_jual - nilai_diskon
+    
+    db = SessionLocal()
+
+    histori = HistoriEstimasi(
+        jenis_proyek=jenis_proyek_asli,
+        luas_m2=data["luas_m2"],
+        tingkat_detail=data["tingkat_detail"],
+        cuaca=cuaca_asli,
+        jarak_km=data["jarak_km"],
+        durasi_hari=durasi,
+        jumlah_pekerja=pekerja,
+        biaya_produksi=estimasi_harga,
+        harga_final=harga_final,
+        diskon=diskon
+    )
+
+    db.add(histori)
+    db.commit()
+    db.close()
 
     return {
     "biaya_produksi": estimasi_harga,
