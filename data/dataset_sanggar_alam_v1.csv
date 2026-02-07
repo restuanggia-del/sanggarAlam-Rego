@@ -1,0 +1,4 @@
+project_id,jenis_proyek,luas_m2,tingkat_detail,jumlah_pekerja,durasi_hari,jarak_km,harga_akhir
+P001,kolam,25,4,3,14,18,42000000
+P002,patung,2,5,2,10,7,28000000
+P003,gapura,15,3,4,12,30,36000000
