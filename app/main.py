@@ -177,3 +177,29 @@ def estimasi(data: dict):
     }
 }
     
+@app.get("/histori")
+def get_histori():
+    db = SessionLocal()
+
+    data = db.query(HistoriEstimasi).order_by(HistoriEstimasi.id.desc()).all()
+
+    db.close()
+
+    hasil = []
+    for item in data:
+        hasil.append({
+            "id": item.id,
+            "tanggal": item.tanggal,
+            "jenis_proyek": item.jenis_proyek,
+            "luas_m2": item.luas_m2,
+            "tingkat_detail": item.tingkat_detail,
+            "cuaca": item.cuaca,
+            "jarak_km": item.jarak_km,
+            "durasi_hari": item.durasi_hari,
+            "jumlah_pekerja": item.jumlah_pekerja,
+            "biaya_produksi": item.biaya_produksi,
+            "harga_final": item.harga_final,
+            "diskon": item.diskon
+        })
+
+    return hasil
