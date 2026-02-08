@@ -313,14 +313,16 @@ def admin_page():
     rows = ""
     for item in data:
         rows += f"""
-        <tr>
-            <td>{item.tanggal}</td>
-            <td>{item.jenis_proyek}</td>
-            <td>{item.luas_m2}</td>
-            <td>{item.cuaca}</td>
-            <td>{item.durasi_hari} hari</td>
-            <td>{item.jumlah_pekerja}</td>
-            <td>Rp {item.harga_final:,}</td>
+        <tr class="hover:bg-emerald-50 transition">
+            <td class="px-4 py-3 text-center">{item.tanggal}</td>
+            <td class="px-4 py-3 text-center">{item.jenis_proyek}</td>
+            <td class="px-4 py-3 text-center">{item.luas_m2}</td>
+            <td class="px-4 py-3 text-center">{item.cuaca}</td>
+            <td class="px-4 py-3 text-center">{item.durasi_hari} hari</td>
+            <td class="px-4 py-3 text-center">{item.jumlah_pekerja}</td>
+            <td class="px-4 py-3 text-center font-semibold text-emerald-700">
+                Rp {item.harga_final:,}
+            </td>
         </tr>
         """
 
