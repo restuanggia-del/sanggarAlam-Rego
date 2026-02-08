@@ -6,11 +6,10 @@ import pandas as pd
 import os
 from pathlib import Path
 
-from sqlalchemy import create_engine, Column, Integer, String, Float
+from sqlalchemy import create_engine, Column, Integer, String, Float, func
 from sqlalchemy.orm import declarative_base, sessionmaker
 from datetime import datetime
 
-# Setup path untuk file model dan encoder
 BASE_DIR = Path(__file__).parent.parent
 DATABASE_URL = "sqlite:///./app.db"
 
@@ -61,6 +60,9 @@ try:
 
     encoder_jenis = joblib.load(BASE_DIR / "encoder_jenis_proyek.pkl")
     encoder_cuaca = joblib.load(BASE_DIR / "encoder_cuaca.pkl")
+
+    print("Jenis proyek dikenal encoder:", encoder_jenis.classes_)
+
 except Exception as e:
     print(f"Warning: Gagal load model atau encoder: {e}")
     model_harga = None
@@ -98,9 +100,20 @@ def root():
 
 @app.post("/estimasi")
 def estimasi(data: dict):
-    # Validasi model tersedia
     if not all([model_harga, model_durasi, model_pekerja, encoder_jenis, encoder_cuaca]):
         return {"error": "Model belum dimuat. Pastikan file .pkl ada di direktori root."}
+
+    if data["jenis_proyek"] not in encoder_jenis.classes_:
+        return {
+            "error": f"jenis_proyek '{data['jenis_proyek']}' tidak dikenali",
+            "valid_jenis_proyek": encoder_jenis.classes_.tolist()
+        }
+
+    if data["cuaca"] not in encoder_cuaca.classes_:
+        return {
+            "error": f"cuaca '{data['cuaca']}' tidak dikenali",
+            "valid_cuaca": encoder_cuaca.classes_.tolist()
+        }
 
     jenis_proyek_asli = data["jenis_proyek"]
     cuaca_asli = data["cuaca"]
@@ -193,6 +206,76 @@ def estimasi(data: dict):
         "faktor_cuaca": faktor_cuaca
     }
 }
+
+@app.get("/analitik/summary")
+def analitik_summary():
+    db = SessionLocal()
+
+    total_proyek = db.query(func.count(HistoriEstimasi.id)).scalar()
+    total_omzet = db.query(func.sum(HistoriEstimasi.harga_final)).scalar() or 0
+    rata_rata_harga = db.query(func.avg(HistoriEstimasi.harga_final)).scalar() or 0
+
+    db.close()
+
+    return {
+        "total_proyek": total_proyek,
+        "total_omzet": int(total_omzet),
+        "rata_rata_harga": int(rata_rata_harga)
+    }
+
+@app.get("/analitik/top-proyek")
+def top_proyek():
+    db = SessionLocal()
+
+    data = (
+        db.query(
+            HistoriEstimasi.jenis_proyek,
+            func.count(HistoriEstimasi.id).label("jumlah")
+        )
+        .group_by(HistoriEstimasi.jenis_proyek)
+        .order_by(func.count(HistoriEstimasi.id).desc())
+        .all()
+    )
+
+    db.close()
+
+    return [
+        {
+            "jenis_proyek": row.jenis_proyek,
+            "jumlah_proyek": row.jumlah
+        }
+        for row in data
+    ]
+
+@app.get("/analitik/harga")
+def analitik_harga():
+    db = SessionLocal()
+
+    termahal = (
+        db.query(HistoriEstimasi)
+        .order_by(HistoriEstimasi.harga_final.desc())
+        .first()
+    )
+
+    termurah = (
+        db.query(HistoriEstimasi)
+        .order_by(HistoriEstimasi.harga_final.asc())
+        .first()
+    )
+
+    db.close()
+
+    return {
+        "termahal": {
+            "jenis_proyek": termahal.jenis_proyek,
+            "harga": termahal.harga_final
+        } if termahal else None,
+
+        "termurah": {
+            "jenis_proyek": termurah.jenis_proyek,
+            "harga": termurah.harga_final
+        } if termurah else None
+    }
     
 @app.get("/histori")
 def get_histori():
