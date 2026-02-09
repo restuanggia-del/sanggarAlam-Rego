@@ -304,6 +304,89 @@ def get_histori():
 
     return hasil
 
+@app.get("/analitik/chart/omzet-per-jenis")
+def chart_omzet_per_jenis():
+    db = SessionLocal()
+
+    data = (
+        db.query(
+            HistoriEstimasi.jenis_proyek,
+            func.sum(HistoriEstimasi.harga_final)
+        )
+        .group_by(HistoriEstimasi.jenis_proyek)
+        .all()
+    )
+
+    db.close()
+
+    labels = [d[0] for d in data]
+    values = [d[1] for d in data]
+
+    return {
+        "labels": labels,
+        "datasets": [
+            {
+                "label": "Total Omzet (Rp)",
+                "data": values
+            }
+        ]
+    }
+
+@app.get("/analitik/chart/proyek-per-bulan")
+def chart_proyek_per_bulan():
+    db = SessionLocal()
+
+    data = (
+        db.query(
+            func.substr(HistoriEstimasi.tanggal, 1, 7).label("bulan"),
+            func.count(HistoriEstimasi.id)
+        )
+        .group_by("bulan")
+        .order_by("bulan")
+        .all()
+    )
+
+    db.close()
+
+    labels = [d[0] for d in data]
+    values = [d[1] for d in data]
+
+    return {
+        "labels": labels,
+        "datasets": [
+            {
+                "label": "Jumlah Proyek",
+                "data": values
+            }
+        ]
+    }
+
+@app.get("/analitik/chart/harga")
+def chart_harga():
+    db = SessionLocal()
+
+    result = db.query(
+        func.min(HistoriEstimasi.harga_final),
+        func.avg(HistoriEstimasi.harga_final),
+        func.max(HistoriEstimasi.harga_final),
+    ).one()
+
+    db.close()
+
+    return {
+        "labels": ["Termurah", "Rata-rata", "Termahal"],
+        "datasets": [
+            {
+                "label": "Harga Proyek (Rp)",
+                "data": [
+                    result[0] or 0,
+                    int(result[1] or 0),
+                    result[2] or 0
+                ]
+            }
+        ]
+    }
+
 @app.get("/admin", response_class=HTMLResponse)
 def admin_page():
     db = SessionLocal()
