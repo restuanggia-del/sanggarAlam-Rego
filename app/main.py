@@ -96,6 +96,26 @@ FAKTOR_CUACA = {
     "hujan": 1.15
 }
 
+from passlib.context import CryptContext
+
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+class User(Base):
+    __tablename__ = "users"
+
+    id = Column(Integer, primary_key=True, index=True)
+    username = Column(String, unique=True, index=True)
+    password_hash = Column(String)
+    role = Column(String)
+
+def hash_password(password: str):
+    return pwd_context.hash(password)
+
+def verify_password(password: str, hash: str):
+    return pwd_context.verify(password, hash)
+
+Base.metadata.create_all(bind=engine)
+
 @app.get("/")
 def root():
     return {"message": "API Sanggar Alam aktif"}
