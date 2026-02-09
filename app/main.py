@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.templating import Jinja2Templates
+from fastapi.requests import Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
 import joblib
@@ -43,6 +45,7 @@ class HistoriEstimasi(Base):
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI(title="Sanggar Alam - Estimasi Proyek")
+templates = Jinja2Templates(directory="templates")
 
 app.add_middleware(
     CORSMiddleware,
@@ -52,7 +55,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# Load models dengan error handling
 try:
     model_harga = joblib.load(BASE_DIR / "model_harga.pkl")
     model_durasi = joblib.load(BASE_DIR / "model_durasi.pkl")
@@ -386,6 +388,10 @@ def chart_harga():
             }
         ]
     }
+
+@app.get("/form", response_class=HTMLResponse)
+def form_page(request: Request):
+    return templates.TemplateResponse("form.html", {"request": request})
 
 @app.get("/admin", response_class=HTMLResponse)
 def admin_page():

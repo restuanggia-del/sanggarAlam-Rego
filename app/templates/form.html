@@ -1,0 +1,84 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Estimasi Proyek - Sanggar Alam</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+  </head>
+  <body class="bg-gray-100 p-10">
+    <div class="max-w-xl mx-auto bg-white p-6 rounded shadow">
+      <h1 class="text-2xl font-bold mb-4">Estimasi Proyek</h1>
+
+      <form id="estimasiForm" class="space-y-3">
+        <input
+          class="w-full border p-2"
+          placeholder="Jenis Proyek (kolam/taman)"
+          id="jenis_proyek"
+        />
+        <input
+          class="w-full border p-2"
+          placeholder="Luas (m2)"
+          type="number"
+          id="luas_m2"
+        />
+        <input
+          class="w-full border p-2"
+          placeholder="Tingkat Detail (1-5)"
+          type="number"
+          id="tingkat_detail"
+        />
+        <input
+          class="w-full border p-2"
+          placeholder="Cuaca (cerah/mendung)"
+          id="cuaca"
+        />
+        <input
+          class="w-full border p-2"
+          placeholder="Jarak (km)"
+          type="number"
+          id="jarak_km"
+        />
+        <input
+          class="w-full border p-2"
+          placeholder="Diskon (0.05)"
+          type="number"
+          step="0.01"
+          id="diskon"
+        />
+
+        <button class="bg-green-600 text-white px-4 py-2 rounded w-full font-bold" type="submit">
+          Hitung Estimasi
+        </button>
+      </form>
+
+      <pre id="hasil" class="bg-gray-100 mt-4 p-3 text-sm"></pre>
+    </div>
+
+    <script>
+      document.getElementById("estimasiForm").onsubmit = async (e) => {
+        e.preventDefault();
+
+        const body = {
+          jenis_proyek: jenis_proyek.value,
+          luas_m2: Number(luas_m2.value),
+          tingkat_detail: Number(tingkat_detail.value),
+          cuaca: cuaca.value,
+          jarak_km: Number(jarak_km.value),
+          diskon: Number(diskon.value || 0),
+        };
+
+        const res = await fetch("/estimasi", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+
+        const data = await res.json();
+        document.getElementById("hasil").innerText = JSON.stringify(
+          data,
+          null,
+          2,
+        );
+      };
+    </script>
+  </body>
+</html>
