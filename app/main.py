@@ -393,6 +393,10 @@ def chart_harga():
 def form_page(request: Request):
     return templates.TemplateResponse("form.html", {"request": request})
 
+@app.get("/dashboard", response_class=HTMLResponse)
+def dashboard(request: Request):
+    return templates.TemplateResponse("dashboard.html", {"request": request})
+
 @app.get("/admin", response_class=HTMLResponse)
 def admin_page():
     db = SessionLocal()
