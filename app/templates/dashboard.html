@@ -5,151 +5,192 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Dashboard Admin - Sanggar Alam</title>
 
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!doctype html>
 
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <html lang="id">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Dashboard - Sanggar Alam</title>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap"
+          rel="stylesheet"
+        />
 
-    <style>
-      body {
-        font-family: "Inter", sans-serif;
-      }
-    </style>
-  </head>
+        <style>
+          body {
+            font-family: "Inter", sans-serif;
+          }
+        </style>
+      </head>
 
-  <body class="bg-slate-100 min-h-screen">
-    <header class="bg-white shadow-sm border-b">
-      <div
-        class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between"
-      >
-        <div>
-          <h1 class="text-2xl font-bold text-slate-800">
-            Dashboard Sanggar Alam
-          </h1>
-          <p class="text-sm text-slate-500">Ringkasan analitik bisnis</p>
-        </div>
+      <body class="bg-blue-50 min-h-screen">
+        <header class="bg-blue-600 shadow-md">
+          <div
+            class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between"
+          >
+            <h1 class="text-xl md:text-2xl font-bold text-white">
+              Sanggar Alam
+            </h1>
 
-        <button
-          onclick="refreshCharts()"
-          class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition"
-        >
-          Refresh Data
-        </button>
-      </div>
-    </header>
+            <nav class="flex gap-3">
+              <a
+                href="/dashboard"
+                class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+              >
+                Dashboard
+              </a>
 
-    <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-2xl shadow p-6">
-          <p class="text-sm text-slate-500">Total Omzet</p>
-          <h2 id="totalOmzet" class="text-2xl font-bold text-slate-800 mt-2">
-            Rp 0
-          </h2>
-        </div>
+              <a
+                href="/form"
+                class="bg-white text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-medium transition"
+              >
+                Form Estimasi
+              </a>
 
-        <div class="bg-white rounded-2xl shadow p-6">
-          <p class="text-sm text-slate-500">Total Proyek</p>
-          <h2 id="totalProyek" class="text-2xl font-bold text-slate-800 mt-2">
-            0
-          </h2>
-        </div>
+              <a
+                href="/admin"
+                class="bg-white text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-medium transition"
+              >
+                Admin
+              </a>
 
-        <div class="bg-white rounded-2xl shadow p-6">
-          <p class="text-sm text-slate-500">Status Sistem</p>
-          <h2 class="text-2xl font-bold text-green-600 mt-2">Aktif</h2>
-        </div>
-      </div>
+              <a
+                href="/logout"
+                class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+              >
+                Logout
+              </a>
+            </nav>
+          </div>
+        </header>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <div class="bg-white rounded-2xl shadow p-6">
-          <h3 class="text-lg font-semibold text-slate-800 mb-4">
-            Omzet per Jenis
-          </h3>
-          <canvas id="omzetChart"></canvas>
-        </div>
+        <main class="max-w-7xl mx-auto px-6 py-8 space-y-8">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="bg-white rounded-2xl shadow p-6">
+              <p class="text-sm text-slate-500">Total Omzet</p>
+              <h2 id="totalOmzet" class="text-2xl font-bold text-blue-700 mt-2">
+                Rp 0
+              </h2>
+            </div>
 
-        <div class="bg-white rounded-2xl shadow p-6">
-          <h3 class="text-lg font-semibold text-slate-800 mb-4">
-            Proyek per Bulan
-          </h3>
-          <canvas id="proyekChart"></canvas>
-        </div>
-      </div>
-    </main>
+            <div class="bg-white rounded-2xl shadow p-6">
+              <p class="text-sm text-slate-500">Total Proyek</p>
+              <h2
+                id="totalProyek"
+                class="text-2xl font-bold text-blue-700 mt-2"
+              >
+                0
+              </h2>
+            </div>
 
-    <script>
-      let omzetChartInstance = null;
-      let proyekChartInstance = null;
+            <div
+              class="bg-white rounded-2xl shadow p-6 flex justify-between items-center"
+            >
+              <div>
+                <p class="text-sm text-slate-500">Status Sistem</p>
+                <h2 class="text-2xl font-bold text-green-600 mt-2">Aktif</h2>
+              </div>
 
-      async function loadChart(url, canvasId, type) {
-        const res = await fetch(url);
-        const data = await res.json();
+              <button
+                onclick="refreshCharts()"
+                class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-xl text-sm font-medium transition"
+              >
+                Refresh
+              </button>
+            </div>
+          </div>
 
-        const ctx = document.getElementById(canvasId);
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <div class="bg-white rounded-2xl shadow p-6">
+              <h3 class="text-lg font-semibold text-slate-800 mb-4">
+                Omzet per Jenis
+              </h3>
+              <canvas id="omzetChart"></canvas>
+            </div>
 
-        if (canvasId === "omzetChart" && omzetChartInstance) {
-          omzetChartInstance.destroy();
-        }
-        if (canvasId === "proyekChart" && proyekChartInstance) {
-          proyekChartInstance.destroy();
-        }
+            <div class="bg-white rounded-2xl shadow p-6">
+              <h3 class="text-lg font-semibold text-slate-800 mb-4">
+                Proyek per Bulan
+              </h3>
+              <canvas id="proyekChart"></canvas>
+            </div>
+          </div>
+        </main>
 
-        const chart = new Chart(ctx, {
-          type: type,
-          data: data,
-          options: {
-            responsive: true,
-            plugins: {
-              legend: {
-                position: "top",
+        <script>
+          let omzetChartInstance = null;
+          let proyekChartInstance = null;
+
+          async function loadChart(url, canvasId, type) {
+            const res = await fetch(url);
+            const data = await res.json();
+
+            const ctx = document.getElementById(canvasId);
+
+            if (canvasId === "omzetChart" && omzetChartInstance) {
+              omzetChartInstance.destroy();
+            }
+            if (canvasId === "proyekChart" && proyekChartInstance) {
+              proyekChartInstance.destroy();
+            }
+
+            const chart = new Chart(ctx, {
+              type: type,
+              data: data,
+              options: {
+                responsive: true,
+                plugins: {
+                  legend: { position: "top" },
+                },
+                animation: { duration: 800 },
               },
-            },
-            animation: {
-              duration: 800,
-            },
-          },
-        });
+            });
 
-        if (canvasId === "omzetChart") omzetChartInstance = chart;
-        if (canvasId === "proyekChart") proyekChartInstance = chart;
+            if (canvasId === "omzetChart") omzetChartInstance = chart;
+            if (canvasId === "proyekChart") proyekChartInstance = chart;
 
-        updateSummary(data, canvasId);
-      }
+            updateSummary(data, canvasId);
+          }
 
-      function updateSummary(data, canvasId) {
-        if (!data.datasets || !data.datasets[0]) return;
+          function updateSummary(data, canvasId) {
+            if (!data.datasets || !data.datasets[0]) return;
 
-        const total = data.datasets[0].data.reduce(
-          (a, b) => a + Number(b || 0),
-          0,
-        );
+            const total = data.datasets[0].data.reduce(
+              (a, b) => a + Number(b || 0),
+              0,
+            );
 
-        if (canvasId === "omzetChart") {
-          document.getElementById("totalOmzet").innerText =
-            "Rp " + total.toLocaleString("id-ID");
-        }
+            if (canvasId === "omzetChart") {
+              document.getElementById("totalOmzet").innerText =
+                "Rp " + total.toLocaleString("id-ID");
+            }
 
-        if (canvasId === "proyekChart") {
-          document.getElementById("totalProyek").innerText = total;
-        }
-      }
+            if (canvasId === "proyekChart") {
+              document.getElementById("totalProyek").innerText = total;
+            }
+          }
 
-      function refreshCharts() {
-        loadAllCharts();
-      }
+          function refreshCharts() {
+            loadAllCharts();
+          }
 
-      function loadAllCharts() {
-        loadChart("/analitik/chart/omzet-per-jenis", "omzetChart", "bar");
-        loadChart("/analitik/chart/proyek-per-bulan", "proyekChart", "line");
-      }
+          function loadAllCharts() {
+            loadChart("/analitik/chart/omzet-per-jenis", "omzetChart", "bar");
+            loadChart(
+              "/analitik/chart/proyek-per-bulan",
+              "proyekChart",
+              "line",
+            );
+          }
 
-      loadAllCharts();
-    </script>
-  </body>
+          loadAllCharts();
+        </script>
+      </body>
+    </html>
+  </head>
 </html>

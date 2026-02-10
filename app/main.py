@@ -3,6 +3,9 @@ from fastapi.templating import Jinja2Templates
 from fastapi.requests import Request
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import HTMLResponse
+from fastapi.responses import RedirectResponse
+from fastapi import Form
+
 import joblib
 import pandas as pd
 import os
@@ -119,6 +122,11 @@ Base.metadata.create_all(bind=engine)
 @app.get("/")
 def root():
     return {"message": "API Sanggar Alam aktif"}
+
+@app.get("/", response_class=HTMLResponse)
+def home():
+    return RedirectResponse("/login")
+
 
 @app.post("/estimasi")
 def estimasi(data: dict):
@@ -415,25 +423,82 @@ def form_page(request: Request):
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request):
-    return templates.TemplateResponse("dashboard.html", {"request": request})
+    return templates.TemplateResponse(
+        "dashboard.html",
+        {"request": request}
+    )
 
 @app.get("/admin", response_class=HTMLResponse)
-def admin_page(request: Request):
+def admin_dashboard(request: Request):
     db = SessionLocal()
-    data = db.query(HistoriEstimasi).order_by(HistoriEstimasi.id.desc()).all()
+    data = db.query(HistoriEstimasi).all()
     db.close()
 
     return templates.TemplateResponse(
         "admin.html",
-        {
-            "request": request,
-            "data": data
-        }
+        {"request": request, "data": data}
     )
+
 @app.get("/login", response_class=HTMLResponse)
 def login_page(request: Request):
     return templates.TemplateResponse("login.html", {"request": request})
 
+
+@app.post("/login")
+def login(
+    request: Request,
+    username: str = Form(...),
+    password: str = Form(...)
+):
+    db = SessionLocal()
+    user = db.query(User).filter(User.username == username).first()
+    db.close()
+
+    if not user or not verify_password(password, user.password_hash):
+        return templates.TemplateResponse(
+            "login.html",
+            {"request": request, "error": "Login gagal"}
+        )
+
+    if user.role == "admin":
+        return RedirectResponse("/admin", status_code=302)
+    else:
+        return RedirectResponse("/form", status_code=302)
+
+
 @app.get("/register", response_class=HTMLResponse)
 def register_page(request: Request):
     return templates.TemplateResponse("register.html", {"request": request})
+
+
+@app.post("/register")
+def register(
+    request: Request,
+    username: str = Form(...),
+    password: str = Form(...),
+    role: str = Form(...)
+):
+    db = SessionLocal()
+
+    if db.query(User).filter(User.username == username).first():
+        db.close()
+        return templates.TemplateResponse(
+            "register.html",
+            {"request": request, "error": "Username sudah terdaftar"}
+        )
+
+    user = User(
+        username=username,
+        password_hash=hash_password(password),
+        role=role
+    )
+
+    db.add(user)
+    db.commit()
+    db.close()
+
+    return RedirectResponse("/login", status_code=302)
+
+@app.get("/logout")
+def logout():
+    return RedirectResponse("/login", status_code=302)
