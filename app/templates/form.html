@@ -50,7 +50,8 @@
                 Admin
               </a>
               <a
-                href="/logout"
+                href="#"
+                onclick="openLogoutModal()"
                 class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
               >
                 Logout
@@ -163,6 +164,35 @@
             </div>
           </div>
         </main>
+        <div
+          id="logoutModal"
+          class="fixed inset-0 bg-black bg-opacity-40 hidden items-center justify-center z-50"
+        >
+          <div
+            class="bg-white rounded-2xl shadow-xl p-8 max-w-sm w-full text-center"
+          >
+            <h2 class="text-lg font-semibold text-slate-800 mb-3">
+              Konfirmasi Logout
+            </h2>
+
+            <p class="text-slate-600 mb-6">Apakah Anda yakin ingin keluar?</p>
+
+            <div class="flex gap-4 justify-center">
+              <button
+                onclick="closeLogoutModal()"
+                class="px-4 py-2 bg-gray-200 hover:bg-gray-300 rounded-lg"
+              >
+                Batal
+              </button>
+              <a
+                href="/logout"
+                class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg"
+              >
+                Ya, Logout
+              </a>
+            </div>
+          </div>
+        </div>
         <script>
           document.getElementById("estimasiForm").onsubmit = async (e) => {
             e.preventDefault();
@@ -186,6 +216,16 @@
               2,
             );
           };
+
+          function openLogoutModal() {
+            document.getElementById("logoutModal").classList.remove("hidden");
+            document.getElementById("logoutModal").classList.add("flex");
+          }
+
+          function closeLogoutModal() {
+            document.getElementById("logoutModal").classList.add("hidden");
+            document.getElementById("logoutModal").classList.remove("flex");
+          }
         </script>
       </body>
     </html>
