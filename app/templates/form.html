@@ -25,36 +25,32 @@
         </style>
       </head>
       <body class="bg-blue-50 min-h-screen">
-        <header class="bg-blue-600 shadow-md">
+        <header class="bg-blue-600 shadow-md sticky top-0 z-50">
           <div
             class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between"
           >
             <h1 class="text-xl md:text-2xl font-bold text-white">
-              Sanggar Alam
+              🌿 Sanggar Alam
             </h1>
-
             <nav class="flex gap-3">
               <a
                 href="/dashboard"
-                class="bg-blue-500 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+                class="{% if active_page == 'dashboard' %} bg-blue-800 text-white {% else %} bg-white text-blue-600 hover:bg-blue-100 {% endif %} px-4 py-2 rounded-lg text-sm font-medium transition"
               >
                 Dashboard
               </a>
-
               <a
                 href="/form"
-                class="bg-white text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-medium transition"
+                class="{% if active_page == 'form' %} bg-blue-800 text-white {% else %} bg-white text-blue-600 hover:bg-blue-100 {% endif %} px-4 py-2 rounded-lg text-sm font-medium transition"
               >
                 Form Estimasi
               </a>
-
               <a
                 href="/admin"
-                class="bg-white text-blue-600 hover:bg-blue-100 px-4 py-2 rounded-lg text-sm font-medium transition"
+                class="{% if active_page == 'admin' %} bg-blue-800 text-white {% else %} bg-white text-blue-600 hover:bg-blue-100 {% endif %} px-4 py-2 rounded-lg text-sm font-medium transition"
               >
                 Admin
               </a>
-
               <a
                 href="/logout"
                 class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
@@ -64,7 +60,6 @@
             </nav>
           </div>
         </header>
-
         <main class="flex justify-center px-4 py-10">
           <div class="w-full max-w-3xl bg-white rounded-2xl shadow-lg">
             <div class="border-b px-8 py-6">

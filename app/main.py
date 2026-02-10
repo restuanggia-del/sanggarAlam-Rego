@@ -419,13 +419,16 @@ def chart_harga():
 
 @app.get("/form", response_class=HTMLResponse)
 def form_page(request: Request):
-    return templates.TemplateResponse("form.html", {"request": request})
+    return templates.TemplateResponse(
+        "form.html",
+        {"request": request, "active_page": "form"}
+    )
 
 @app.get("/dashboard", response_class=HTMLResponse)
 def dashboard(request: Request):
     return templates.TemplateResponse(
         "dashboard.html",
-        {"request": request}
+        {"request": request, "active_page": "dashboard"}
     )
 
 @app.get("/admin", response_class=HTMLResponse)
@@ -436,7 +439,7 @@ def admin_dashboard(request: Request):
 
     return templates.TemplateResponse(
         "admin.html",
-        {"request": request, "data": data}
+        {"request": request, "data": data, "active_page": "admin"}
     )
 
 @app.get("/login", response_class=HTMLResponse)
