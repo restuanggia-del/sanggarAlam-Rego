@@ -4,55 +4,55 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Admin Sanggar Alam</title>
-
     <script src="https://cdn.tailwindcss.com"></script>
-
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap"
       rel="stylesheet"
     />
-
     <style>
       body {
         font-family: "Inter", sans-serif;
       }
     </style>
   </head>
-  <header class="bg-blue-600 shadow-md sticky top-0 z-50">
-    <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
-      <h1 class="text-xl md:text-2xl font-bold text-white">🌿 Sanggar Alam</h1>
-      <nav class="flex gap-3">
-        <a
-          href="/dashboard"
-          class="{% if active_page == 'dashboard' %} bg-blue-800 text-white {% else %} bg-white text-blue-600 hover:bg-blue-100 {% endif %} px-4 py-2 rounded-lg text-sm font-medium transition"
-        >
-          Dashboard
-        </a>
-        <a
-          href="/form"
-          class="{% if active_page == 'form' %} bg-blue-800 text-white {% else %} bg-white text-blue-600 hover:bg-blue-100 {% endif %} px-4 py-2 rounded-lg text-sm font-medium transition"
-        >
-          Form Estimasi
-        </a>
-        <a
-          href="/admin"
-          class="{% if active_page == 'admin' %} bg-blue-800 text-white {% else %} bg-white text-blue-600 hover:bg-blue-100 {% endif %} px-4 py-2 rounded-lg text-sm font-medium transition"
-        >
-          Admin
-        </a>
-        <a
-          href="/logout"
-          class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
-        >
-          Logout
-        </a>
-      </nav>
-    </div>
-  </header>
-
   <body class="bg-gradient-to-br from-blue-50 to-blue-100 min-h-screen">
+    <header class="bg-blue-600 shadow-md sticky top-0 z-50">
+      <div
+        class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between"
+      >
+        <h1 class="text-xl md:text-2xl font-bold text-white">
+          🌿 Sanggar Alam
+        </h1>
+        <nav class="flex gap-3">
+          <a
+            href="/dashboard"
+            class="{% if active_page == 'dashboard' %} bg-blue-800 text-white {% else %} bg-white text-blue-600 hover:bg-blue-100 {% endif %} px-4 py-2 rounded-lg text-sm font-medium transition"
+          >
+            Dashboard
+          </a>
+          <a
+            href="/form"
+            class="{% if active_page == 'form' %} bg-blue-800 text-white {% else %} bg-white text-blue-600 hover:bg-blue-100 {% endif %} px-4 py-2 rounded-lg text-sm font-medium transition"
+          >
+            Form Estimasi
+          </a>
+          <a
+            href="/admin"
+            class="{% if active_page == 'admin' %} bg-blue-800 text-white {% else %} bg-white text-blue-600 hover:bg-blue-100 {% endif %} px-4 py-2 rounded-lg text-sm font-medium transition"
+          >
+            Admin
+          </a>
+          <a
+            href="/logout"
+            class="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg text-sm font-medium transition"
+          >
+            Logout
+          </a>
+        </nav>
+      </div>
+    </header>
     <div class="max-w-7xl mx-auto px-6 py-10">
       <div
         class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4"
@@ -63,7 +63,6 @@
           </h1>
           <p class="text-gray-600 mt-1">Histori Estimasi Proyek</p>
         </div>
-
         <div class="relative w-full md:w-80">
           <input
             type="text"
@@ -111,15 +110,12 @@
         © 2026 Sanggar Alam — Dashboard Admin
       </p>
     </div>
-
     <script>
       const searchInput = document.getElementById("searchInput");
       const tableBody = document.getElementById("tableBody");
-
       searchInput.addEventListener("keyup", () => {
         const filter = searchInput.value.toLowerCase();
         const rows = tableBody.getElementsByTagName("tr");
-
         for (let i = 0; i < rows.length; i++) {
           const text = rows[i].innerText.toLowerCase();
           rows[i].style.display = text.includes(filter) ? "" : "none";
